@@ -1,9 +1,6 @@
 import "../global.css";
 export interface MonthInputProps {
-    selected: {
-        monthName: string;
-        year: number;
-    };
+    selected: Date;
     lang?: string;
     size?: "small" | "large";
     bgColor?: string;

@@ -3,7 +3,7 @@ import styles from "./MonthInput.module.css";
 import "../global.css";
 
 export interface MonthInputProps {
-  selected: { monthName: string; year: number };
+  selected: Date;
   lang?: string;
   size?: "small" | "large";
   bgColor?: string;
@@ -33,14 +33,18 @@ export function MonthInput(props: MonthInputProps) {
     }
   }, []);
 
+  const displayedMonth = new Date(props.selected).toLocaleString(props.lang, {
+    month: "long",
+  });
+
+  const displayedYear = new Date(props.selected).getFullYear();
+
   return (
     <button
       className={styles.monthInputField}
       onClick={() => props.setShowMonthPicker(!props.showMonthPicker)}
     >
-      {props.selected.monthName ??
-        new Date().toLocaleString(props.lang, { month: "long" })}{" "}
-      {props.selected.year}
+      <span>{displayedMonth}</span> <span>{displayedYear}</span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width={props.size == "small" ? 16 : 24}

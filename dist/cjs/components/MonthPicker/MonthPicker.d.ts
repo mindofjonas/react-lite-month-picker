@@ -1,15 +1,7 @@
 import "../global.css";
 export interface MonthPickerProps {
-    selected: {
-        month: number;
-        year: number;
-    };
-    onChange: (date: {
-        month: number;
-        year: number;
-        monthName: string;
-        monthShortName: string;
-    }) => void;
+    selected: Date;
+    onChange: (date: Date) => void;
     setIsOpen: (isOpen: boolean) => void;
     bgColorMonthActive?: string;
     bgColorMonthHover?: string;

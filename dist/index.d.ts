@@ -1,16 +1,8 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
 interface MonthPickerProps {
-    selected: {
-        month: number;
-        year: number;
-    };
-    onChange: (date: {
-        month: number;
-        year: number;
-        monthName: string;
-        monthShortName: string;
-    }) => void;
+    selected: Date;
+    onChange: (date: Date) => void;
     setIsOpen: (isOpen: boolean) => void;
     bgColorMonthActive?: string;
     bgColorMonthHover?: string;
@@ -23,10 +15,7 @@ interface MonthPickerProps {
 declare function MonthPicker(props: MonthPickerProps): react_jsx_runtime.JSX.Element;
 
 interface MonthInputProps {
-    selected: {
-        monthName: string;
-        year: number;
-    };
+    selected: Date;
     lang?: string;
     size?: "small" | "large";
     bgColor?: string;

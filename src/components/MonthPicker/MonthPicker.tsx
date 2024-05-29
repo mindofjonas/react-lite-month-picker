@@ -4,13 +4,8 @@ import styles from "./MonthPicker.module.css";
 import "../global.css";
 
 export interface MonthPickerProps {
-  selected: { month: number; year: number };
-  onChange: (date: {
-    month: number;
-    year: number;
-    monthName: string;
-    monthShortName: string;
-  }) => void;
+  selected: Date;
+  onChange: (date: Date) => void;
   setIsOpen: (isOpen: boolean) => void;
   bgColorMonthActive?: string;
   bgColorMonthHover?: string;
@@ -22,12 +17,12 @@ export interface MonthPickerProps {
 }
 
 export function MonthPicker(props: MonthPickerProps) {
-  const [month, setMonth] = useState(
-    props.selected.month ? props.selected.month - 1 : new Date().getMonth()
-  );
-  const [year, setYear] = useState(
-    props.selected.year ?? new Date().getFullYear()
-  );
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  const displayedMonthIndex = new Date(
+    props.selected || selectedDate
+  ).getMonth();
+  const displayedYear = new Date(props.selected || selectedDate).getFullYear();
 
   const setActiveMonthBgColor = (r: HTMLElement, color: string) => {
     r.style.setProperty("--month-active-bg-color", color);
@@ -62,7 +57,7 @@ export function MonthPicker(props: MonthPickerProps) {
   }, []);
 
   const changeYear = (year: number) => {
-    setYear(year);
+    setSelectedDate(new Date(year, displayedMonthIndex, 1));
   };
 
   const getMonthNames = (
@@ -75,30 +70,16 @@ export function MonthPicker(props: MonthPickerProps) {
     });
     const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => {
       const mm = month < 10 ? `0${month}` : month;
-      return new Date(`2023-${mm}-01T00:00:00+00:00`);
+      const yyyy = new Date().getFullYear();
+      return new Date(`${yyyy}-${mm}-01T00:00:00+00:00`);
     });
     return months.map((date) => formatter.format(date));
   };
 
   const changeMonth = (month: number) => {
-    setMonth(month);
+    setSelectedDate(new Date(displayedYear, month, 1));
+    props.onChange(new Date(displayedYear, month, 1));
     props.setIsOpen(false);
-    props.onChange({
-      month: month + 1,
-      year: year,
-      monthName: new Date(year, month).toLocaleString(
-        props.lang ? props.lang : "en",
-        {
-          month: "long",
-        }
-      ),
-      monthShortName: new Date(year, month).toLocaleString(
-        props.lang ? props.lang : "en",
-        {
-          month: "short",
-        }
-      ),
-    });
   };
 
   return (
@@ -107,7 +88,7 @@ export function MonthPicker(props: MonthPickerProps) {
         <button
           className={styles.button}
           aria-label="Previous Year"
-          onClick={(e) => changeYear(year - 1)}
+          onClick={(e) => changeYear(displayedYear - 1)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -125,12 +106,12 @@ export function MonthPicker(props: MonthPickerProps) {
           </svg>
         </button>
         <span aria-description="Year selected" className={styles.bold1}>
-          {year}
+          {displayedYear}
         </span>
         <button
           className={styles.button}
           aria-label="Next Year"
-          onClick={(e) => changeYear(year + 1)}
+          onClick={(e) => changeYear(displayedYear + 1)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +135,8 @@ export function MonthPicker(props: MonthPickerProps) {
             <button
               key={index}
               className={`${styles.month} ${styles.button} ${
-                index == month && props.selected.year == year
+                index == displayedMonthIndex &&
+                displayedYear == new Date().getFullYear()
                   ? styles.active
                   : null
               }`}
